@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace TaskManagement.Controllers;
 
@@ -14,70 +15,31 @@ public class TaskController : ControllerBase
         return myContext.Tasks.ToList();
     }
 
-    public Boolean Post()
+    [HttpPost(Name = "CreateTask")]
+    public Boolean Create([FromBody] Task newTask)
     {
         var myContext = new MyContext();
-        myContext.Tasks.ToList();
+
+        myContext.Tasks.Add(newTask);
+        return true;
+    }
+
+    [HttpPatch(Name = "UpdateTask")]
+    public Boolean Update([FromBody] Task newTask)
+    {
+        var myContext = new MyContext();
+
+        myContext.Tasks.Update(newTask);
+        return true;
+    }
 
 
-        string _productTitle = productTitle.Text;
+    [HttpDelete(Name = "DeleteTask")]
+    public Boolean Delete([FromBody] Task newTask)
+    {
+        var myContext = new MyContext();
 
-
-        int _productPrice, _productCount;
-
-        if (Int32.TryParse(productPrice.Text, out _productPrice) && Int32.TryParse(productCount.Text, out _productCount))
-        {
-            Product product = new Product();
-
-            product.Title = _productTitle;
-            product.Price = _productPrice;
-            product.Count = _productCount;
-
-            var dbContext = new miniprojectContext();
-
-            string messageBoxText;
-
-            if (productId != 0)
-            {
-                product.Id = productId;
-                dbContext.Products.Update(product);
-                messageBoxText = "Product updated succesfully!";
-            }
-            else
-            {
-                dbContext.Products.Add(product);
-                messageBoxText = "Product added succesfully!";
-
-            }
-
-            dbContext.SaveChanges();
-
-            string caption = "Done";
-            MessageBoxButton button = MessageBoxButton.OK;
-            MessageBoxImage icon = MessageBoxImage.Information;
-
-            MessageBox.Show(messageBoxText, caption, button, icon, MessageBoxResult.Yes);
-
-            this.Close();
-
-
-        }
-        else
-        {
-            string messageBoxText = "Please check entered values!";
-            string caption = "Error";
-            MessageBoxButton button = MessageBoxButton.OK;
-            MessageBoxImage icon = MessageBoxImage.Error;
-            MessageBoxResult result;
-
-            result = MessageBox.Show(messageBoxText, caption, button, icon, MessageBoxResult.Yes);
-
-        }
-
-
-
-
-
+        myContext.Tasks.Delete(newTask);
         return true;
     }
 }
