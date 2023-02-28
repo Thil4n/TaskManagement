@@ -6,7 +6,7 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 public class MyContext : DbContext
 {
-    public DbSet<Task> MyEntities { get; set; }
+    public DbSet<Task> Tasks { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
