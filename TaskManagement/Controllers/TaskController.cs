@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace TaskManagement.Controllers;
@@ -9,38 +10,45 @@ public class TaskController : ControllerBase
 {
 
     [HttpGet(Name = "GetTask")]
-    public List<Task> Get()
+    public List<Task> GetTasks()
     {
         var myContext = new MyContext();
         return myContext.Tasks.ToList();
     }
 
     [HttpPost(Name = "CreateTask")]
-    public Boolean Create([FromBody] Task newTask)
+    public IActionResult CreateTask([FromBody] Task newTask)
     {
         var myContext = new MyContext();
 
         myContext.Tasks.Add(newTask);
-        return true;
+        myContext.SaveChanges();
+        return Ok($"Task inserted successfully");
     }
 
     [HttpPatch(Name = "UpdateTask")]
-    public Boolean Update([FromBody] Task newTask)
+    public IActionResult UpdateTask([FromBody] Task newTask)
     {
         var myContext = new MyContext();
 
         myContext.Tasks.Update(newTask);
-        return true;
+        myContext.SaveChanges();
+        return Ok($"Task updated successfully");
     }
 
 
-    [HttpDelete(Name = "DeleteTask")]
-    public Boolean Delete([FromBody] Task newTask)
+    [HttpDelete("{taskId}")]
+    public IActionResult DeleteTask([FromRoute] int taskId)
     {
         var myContext = new MyContext();
 
-        myContext.Tasks.Delete(newTask);
-        return true;
+        Task task = new Task() { Id = taskId };
+        myContext.Tasks.Attach(task);
+        myContext.Tasks.Remove(task);
+        myContext.SaveChanges();
+
+        return Ok($"Task with ID {taskId} has been deleted.");
     }
+
 }
 
